@@ -1,4 +1,5 @@
-.txt
+*.txt
 !requirements.txt
 __pycache__/
 venv/
+*.bat
