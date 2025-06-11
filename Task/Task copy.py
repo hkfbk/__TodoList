@@ -28,7 +28,7 @@ class UserTaskList:
     """
     
     def __init__(self) -> None:
-        self.task_map:dict[str,Task] = dict() # 任务列表
+        self.task_list:list[Task] = list() # 任务列表
         self.name:str = None # type: ignore
         self.user_id:str = None # type: ignore
     
@@ -41,27 +41,14 @@ class UserTaskList:
         for d in L:
             task = Task(d['create_time'], datetime.strptime(d['deadline'],'%Y-%m-%d %H:%M:%S'), 
                         d['task'],d['status'], d['priority'])
-            self.task_map[d['task']] = task
+            self.task_list.append(task)
     
     def append_task(self, task:Task):
-        self.task_map[task.task] = task
-        
-    
-    def cancle_task(self, task_name:str)->str | None:
-        if task_name not in self.task_map:
-            return f'任务:{task_name}不存在'
-        if self.task_map[task_name].status in ('已完成','进行中'):
-            return '该任务正在进行中或已完成'
-        del self.task_map[task_name]
-        return '成功取消'
-        
-    
-    
-    
+        self.task_list.append(task)
     
     def save(self):
         data_list = list()
-        for task in self.task_map.values():
+        for task in self.task_list:
             # print(task.task)
             data_list.append({'create_time':str(task.create_time), 'deadline':str(task.deadline), 
                               'task':task.task, 'status':str(task.status), 'priority':task.priority})
@@ -74,14 +61,14 @@ class UserTaskList:
             
     
     def __str__(self) -> str:
-        return f'user:{self.name}, id{self.user_id}, task list{{{self.task_map}}}'
+        return f'user:{self.name}, id{self.user_id}, task list{{{self.task_list}}}'
 
     
     
         
 
 
-User_task_list:UserTaskList = UserTaskList()
+# User_task_list:UserTaskList = UserTaskList()
 
 
 
