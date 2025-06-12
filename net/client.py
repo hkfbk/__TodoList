@@ -54,10 +54,9 @@ def send_hook(send_task:list[Task]):
     for i in send_task:
         if not i.reminded:
             data['text']['content'] = f'任务提醒!!!\n任务{i.task}\n截止时间:{i.deadline}\n优先级:{i.priority}\n状态:{i.status}\n{at}'
-            print(data)
+            # print(data)
             i.reminded = True
-            # http.post(URL['url'],json=data)
-            break
+            http.post(URL['url'],json=data)
 
 
 
@@ -73,7 +72,7 @@ def run_client(event:thd.Event):
         if len(send_task_list) > 0:
             send_hook(send_task_list)
         event.clear()
-        target = event.wait(15)
+        target = event.wait(time)
             
         
         
