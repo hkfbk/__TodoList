@@ -39,7 +39,8 @@ class UserTaskList:
     
     def load_task(self, L:list[dict]):
         for d in L:
-            task = Task(d['create_time'], datetime.strptime(d['deadline'],'%Y-%m-%d %H:%M:%S'), 
+            task = Task(d['create_time'],
+                         datetime.strptime(d['deadline'],'%Y-%m-%d %H:%M:%S'), 
                         d['task'],d['status'], d['priority'])
             self.task_map[d['task']] = task
     
@@ -63,8 +64,10 @@ class UserTaskList:
         data_list = list()
         for task in self.task_map.values():
             # print(task.task)
-            data_list.append({'create_time':str(task.create_time), 'deadline':str(task.deadline), 
-                              'task':task.task, 'status':str(task.status), 'priority':task.priority})
+            data_list.append({'create_time':str(task.create_time), 
+                              'deadline':str(task.deadline), 
+                              'task':task.task, 'status':str(task.status), 
+                              'priority':task.priority})
         with open(LOCALDATA, 'r', encoding='utf-8') as rf:
             json_obj = json.load(rf)
             json_obj[self.name] = data_list
