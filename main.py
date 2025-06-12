@@ -2,14 +2,17 @@ import os,sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
 sys.path.insert(0,project_root)
 import simplejson as json
-from Task import User_task_list, UserTaskList
+from Task import User_task_list
 
 from CallBack import add_task, cancle_task, ls_task, quit_exe, mark_status
 COMMAND_MAP:dict = dict() # type: ignore
 def init():
-    user_name = 'jiang' #input('你的名字是:\n')
-    user_id = 'jiang' #input('您的id是:\n')
+    user_name = input('你的名字是:\n')
+    user_id = input('您的id是:\n')
     User_task_list.set_userinfo(user_name, user_id)
+    with open('test.json',encoding='utf=8') as f:
+        tasks = json.load(f)[User_task_list.user_id]
+        User_task_list.load_task(tasks)
     COMMAND_MAP['add'] = add_task
     COMMAND_MAP['ls'] = ls_task
     COMMAND_MAP['cancle'] = cancle_task
@@ -32,38 +35,15 @@ def task_distribution(task_key:str):
     if task_key in COMMAND_MAP:
         COMMAND_MAP[task_key]()
     else:
-        print('error')
+        print('请按照提示正确输入')
+        return
 
 def main():
-    # init()
-    from datetime import datetime,timedelta
-    n = datetime.now().replace(microsecond=0)
-    n2 = n +  timedelta(minutes=10)
-    print(n,'\n', n2)
-
-    # with open('test.json',encoding='utf=8') as f:
-    #     tasks = json.load(f)[User_task_list.name]
-    #     User_task_list.load_task(tasks)
-    # add_task()
-    # cancle_task()
-    # mark_status()
-    # User_task_list.save()
-    # print(User_task_list.task_map['完成每日工作'])
-    # print(User_task_list)
-    
-    # while 1:
-    #     ui()
-    #     task_distribution(input())
-    
-    
-    
-    
-    
-    
-    # d = datetime.now().replace(microsecond=0)
-    # sd = str(d)
-    # print(sd)
-    # print(datetime.fromisoformat(sd))
+    init()
+    while 1:
+        ui()
+        arg = input()
+        task_distribution(arg)
 
 
 

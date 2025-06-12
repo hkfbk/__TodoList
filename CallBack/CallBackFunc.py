@@ -7,11 +7,13 @@ def add_task():
     end_time_s = '2025-12-12 12:12:12' #input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')
     end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
     print(end_time)
-    stauts = '已完成' #TaskStartus(input('任务状态: 未开始, 进行中,  已完成,  推迟\n'))
+    # stauts = '已完成' #TaskStartus(input('任务状态: 未开始, 进行中,  已完成,  推迟\n'))
+    stauts = input('任务状态: 未开始, 进行中,  已完成,  推迟\n')
     lv = int('1') #int(input('优先级, 1,2,3,4,5\n'))
     begin_time = datetime.now().replace(microsecond=0)
     task = Task(begin_time, end_time, task_content, stauts, lv)
     User_task_list.append_task(task)
+    User_task_list.save()
 
 def cancle_task():
     """取消任务"""
@@ -19,12 +21,33 @@ def cancle_task():
     if task_name == '-q':
         return
     print(User_task_list.cancle_task(task_name=task_name))
+    User_task_list.save()
 
 
 
 
 def ls_task():
     """查看所有任务"""
+    show:int = 0
+    while 1:
+        try:
+            show = int(input('请输入查看方式(1:按完成状态排序, 2:按日期排序, 3:默认, 0:退出)\n'))
+        except ValueError:
+            print('请根据提示正确输入!!!')
+        else:
+            if show == 0:
+                return
+            if show == 1:
+                return User_task_list.show_task_list(True)
+            elif show == 2:
+                return User_task_list.show_task_list(False)
+            elif show == 3:
+                return User_task_list.show_task_list()
+            else:
+                print('请根据提示正确输入!!!')
+        
+        
+    
     print('all')
 
 
@@ -59,4 +82,5 @@ def mark_status():
             continue
         break
     User_task_list.task_map[task_name].status = status
+    User_task_list.save()
     print('修改完成')
