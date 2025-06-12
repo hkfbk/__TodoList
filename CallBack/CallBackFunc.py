@@ -1,10 +1,15 @@
 from Task import Task, TaskStartus,User_task_list
 from datetime import datetime
+import threading as thd
+from net import set_stop
+
+
+Thread_event = thd.Event()
 
 def add_task():
     """添加任务"""
     task_content = input('任务内容:\n')
-    end_time_s = '2025-12-12 12:12:12' #input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')
+    end_time_s = '2025-06-12 14:12:12' #input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')
     end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
     print(end_time)
     # stauts = '已完成' #TaskStartus(input('任务状态: 未开始, 进行中,  已完成,  推迟\n'))
@@ -14,6 +19,7 @@ def add_task():
     task = Task(begin_time, end_time, task_content, stauts, lv)
     User_task_list.append_task(task)
     User_task_list.save()
+    Thread_event.set()
 
 def cancle_task():
     """取消任务"""
@@ -54,6 +60,8 @@ def ls_task():
 def quit_exe():
     """退出程序"""
     User_task_list.save()
+    set_stop(False)
+    Thread_event.set()
     exit()
     print('quit')
 
