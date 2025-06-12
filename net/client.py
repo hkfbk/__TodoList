@@ -16,8 +16,7 @@ def init_url():
         URL = json.load(f)
 def check_today()->dict[str,Task]:
     task:dict[str,Task] = User_task_list.today_task()
-    today = {k:task[k] for k in task if task[k].status in ('未开始','推迟')}
-    return today
+    return {k:task[k] for k in task if task[k].status in ('未开始','推迟')}
 
 def check_task_time(today:dict[str,Task])->tuple:
     hour = 3600

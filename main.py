@@ -12,8 +12,8 @@ COMMAND_MAP:dict = dict() # type: ignore
 
 
 def init():
-    user_name = '蒋浩祥'#input('你的名字是:\n')
-    user_id = 'jianghaoxiang@kingsoft.com'#input('您的id是:\n')
+    user_name = input('你的名字是:\n') # 蒋浩祥
+    user_id = input('您的邮箱是:\n') # 'jianghaoxiang@kingsoft.com'
     User_task_list.set_userinfo(user_name, user_id)
     with open('test.json',encoding='utf=8') as f:
         tasks = json.load(f)[User_task_list.user_id]

@@ -6,11 +6,11 @@ import threading as thd
 
 LOCALDATA:str = 'test.json'
 
-class TaskStartus(Enum):
-    E_STARTED = '未开始'
-    E_START = '进行中'
-    E_FINISHED = '已完成'
-    E_DELAY = '推迟'
+# class TaskStartus(Enum):
+#     E_STARTED = '未开始'
+#     E_START = '进行中'
+#     E_FINISHED = '已完成'
+#     E_DELAY = '推迟'
 
 @dataclass
 class Task:
@@ -40,7 +40,7 @@ class UserTaskList:
         self.task_map:dict[str,Task] = dict() # 任务列表
         self.name:str = None # type: ignore
         self.user_id:str = None # type: ignore
-        self.lock = thd.Lock()
+        self.lock = thd.Lock() # 与发送通知的的线程存在竞争访问，加锁保护
     
     def set_userinfo(self,name:str, user_id:str) -> None:
         self.name = name # 任务负责人
