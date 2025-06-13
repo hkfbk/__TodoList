@@ -12,12 +12,23 @@ COMMAND_MAP:dict = dict() # type: ignore
 
 
 def init():
+    import re
     user_name = input('你的名字是:\n') # 蒋浩祥
-    user_id = input('您的邮箱是:\n') # 'jianghaoxiang@kingsoft.com'
-    User_task_list.set_userinfo(user_name, user_id)
-    with open('test.json',encoding='utf=8') as f:
-        tasks = json.load(f)[User_task_list.user_id]
-        User_task_list.load_task(tasks)
+    while 1:
+        user_id = input('您的邮箱是:\n') # 'jianghaoxiang@kingsoft.com'
+        if re.match(r"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$",user_id) is None:
+            print('请正确输入邮箱', end=' ')
+        else:
+            break
+    User_task_list.set_userinfo(user_name, user_id) # type: ignore
+    try:
+        with open('test.json','rw',encoding='utf=8') as f:
+            task_dict = json.load(f)
+            if user_id not in task_dict: # type: ignore
+                task_dict[user_id] = {} # type: ignore
+            User_task_list.load_task(task_dict[user_id]) # type: ignore
+    except FileNotFoundError:
+        print('存储文件不存在，将初始化一个新存储文件')
     COMMAND_MAP['add'] = add_task
     COMMAND_MAP['ls'] = ls_task
     COMMAND_MAP['cancle'] = cancle_task
@@ -40,7 +51,6 @@ def task_distribution(task_key:str):
         COMMAND_MAP[task_key]()
     else:
         print('请按照提示正确输入')
-        return
 
 def main():
     init()
@@ -49,10 +59,6 @@ def main():
     while 1:
         ui()
         arg = input()
-        if arg not in ('add','ls','cancle','mark','-q'):
-            print('请根据提示正确输入')
-            sleep(1)
-            continue
         task_distribution(arg)
     send_thd.join()
 

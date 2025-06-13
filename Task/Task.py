@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime, date
-from enum import Enum
+from datetime import datetime
+# from enum import Enum
 import simplejson as json
 import threading as thd
 
@@ -48,7 +48,7 @@ class UserTaskList:
     
     
     def load_task(self, L:list[dict]):
-        for d in L[1:]:
+        for d in L:
             task = Task(d['create_time'],
                          datetime.strptime(d['deadline'],r'%Y-%m-%d %H:%M:%S'), 
                         d['task'],d['status'], d['priority'])
@@ -102,7 +102,7 @@ class UserTaskList:
     
     def save(self):
         data_list = list()
-        data_list.append({'user_name':self.name})
+        # data_list.append({'user_name':self.name})
         for task in self.task_map.values():
             # print(task.task)
             data_list.append({'create_time':str(task.create_time), 

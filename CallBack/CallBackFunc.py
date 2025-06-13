@@ -9,14 +9,27 @@ Thread_event = thd.Event()
 def add_task():
     """添加任务"""
     task_content = input('任务内容:\n')
-    end_time_s = '2025-06-12 14:12:12' #input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')
-    end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
-    print(end_time)
+    while 1:
+        try:
+            end_time_s =  input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')#'2025-06-12 14:12:12'
+            end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            print('请根据时间格式正确输入时间!!!',end=' ')
+    # print(end_time)
     # stauts = '已完成' #TaskStartus(input('任务状态: 未开始, 进行中,  已完成,  推迟\n'))
-    stauts = input('任务状态: 未开始, 进行中,  已完成,  推迟\n')
-    lv = int('1') #int(input('优先级, 1,2,3,4,5\n'))
+    while 1:
+        stauts = input('任务状态: 未开始, 进行中,  已完成,  推迟\n')
+        if stauts in ('未开始', '进行中',  '已完成',  '推迟'):
+            break
+        else:
+            print('请根据提示正确输入任务状态!!!',end=' ')
+    while 1:
+        try:
+            lv = int(input('优先级, 1,2,3,4,5(数字越小优先级越高)\n'))
+        except ValueError:
+            print('请根据提示正确输入!!!',end=' ')
     begin_time = datetime.now().replace(microsecond=0)
-    task = Task(begin_time, end_time, task_content, stauts, lv)
+    task = Task(begin_time, end_time, task_content, stauts, lv) # type: ignore
     User_task_list.append_task(task)
     User_task_list.save()
     Thread_event.set()
@@ -28,6 +41,7 @@ def cancle_task():
         return
     print(User_task_list.cancle_task(task_name=task_name))
     User_task_list.save()
+    Thread_event.set()
 
 
 
@@ -39,22 +53,19 @@ def ls_task():
         try:
             show = int(input('请输入查看方式(1:按完成状态排序, 2:按日期排序, 3:默认, 0:退出)\n'))
         except ValueError:
-            print('请根据提示正确输入!!!')
+            print('请根据提示正确输入!!!',end=' ')
         else:
-            if show == 0:
-                return
-            if show == 1:
-                return User_task_list.show_task_list(True)
-            elif show == 2:
-                return User_task_list.show_task_list(False)
-            elif show == 3:
-                return User_task_list.show_task_list()
-            else:
-                print('请根据提示正确输入!!!')
-        
-        
-    
-    print('all')
+            match show:
+                case 0:
+                    return
+                case 1:
+                    return User_task_list.show_task_list(True)
+                case 2:
+                    return User_task_list.show_task_list(False)
+                case 3:
+                    return User_task_list.show_task_list()
+                case _:
+                    print('请按照提示正确输入!!!',end=' ')
 
 
 def quit_exe():
@@ -63,7 +74,6 @@ def quit_exe():
     set_stop(False)
     Thread_event.set()
     exit()
-    print('quit')
 
 
 def mark_status():
@@ -86,9 +96,10 @@ def mark_status():
         if status == '-q':
             return
         if status not in ('进行中', '已完成', '推迟'):
-            print('请正确输入状态', end='  ')
+            print('请正确输入状态', end=' ')
             continue
         break
     User_task_list.task_map[task_name].status = status
     User_task_list.save()
+    Thread_event.set()
     print('修改完成')
