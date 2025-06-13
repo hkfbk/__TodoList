@@ -13,6 +13,7 @@ def add_task():
         try:
             end_time_s =  input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')#'2025-06-12 14:12:12'
             end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
+            break
         except ValueError:
             print('请根据时间格式正确输入时间!!!',end=' ')
     # print(end_time)
@@ -26,6 +27,7 @@ def add_task():
     while 1:
         try:
             lv = int(input('优先级, 1,2,3,4,5(数字越小优先级越高)\n'))
+            break
         except ValueError:
             print('请根据提示正确输入!!!',end=' ')
     begin_time = datetime.now().replace(microsecond=0)

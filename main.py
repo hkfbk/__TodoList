@@ -22,7 +22,7 @@ def init():
             break
     User_task_list.set_userinfo(user_name, user_id) # type: ignore
     try:
-        with open('test.json','rw',encoding='utf=8') as f:
+        with open('test.json','r',encoding='utf=8') as f:
             task_dict = json.load(f)
             if user_id not in task_dict: # type: ignore
                 task_dict[user_id] = {} # type: ignore

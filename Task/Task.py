@@ -109,12 +109,16 @@ class UserTaskList:
                               'deadline':str(task.deadline), 
                               'task':task.task, 'status':str(task.status), 
                               'priority':task.priority})
-        with open(LOCALDATA, 'r', encoding='utf-8') as rf:
-            json_obj = json.load(rf)
+        try:
+            with open(LOCALDATA, 'r', encoding='utf-8') as rf:
+                json_obj = json.load(rf)
+                json_obj[self.user_id] = data_list
+        except FileNotFoundError:
+            json_obj = dict()
             json_obj[self.user_id] = data_list
-            with open(LOCALDATA, 'w', encoding='utf-8') as wf:
-                # print(json_obj)
-                json.dump(json_obj,wf,ensure_ascii=False,indent=4)
+        with open(LOCALDATA, 'w', encoding='utf-8') as wf:
+            # print(json_obj)
+            json.dump(json_obj,wf,ensure_ascii=False,indent=4)
             
     
     def __str__(self) -> str:
