@@ -47,7 +47,7 @@ class UserTaskList:
         self.user_id = user_id # 任务负责人id
     
     
-    def load_task(self, L:list[dict]):
+    def load_tasks(self, L:list[dict]):
         for d in L:
             task = Task(d['create_time'],
                          datetime.strptime(d['deadline'],r'%Y-%m-%d %H:%M:%S'), 

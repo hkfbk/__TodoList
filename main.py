@@ -25,7 +25,7 @@ def init():
             task_dict = json.load(f)
             if user_id not in task_dict: # type: ignore
                 task_dict[user_id] = {} # type: ignore
-            User_task_list.load_task(task_dict[user_id]) # type: ignore
+            User_task_list.load_tasks(task_dict[user_id]) # type: ignore
     except FileNotFoundError:
         print('存储文件不存在，将初始化一个新存储文件')
     COMMAND_MAP['add'] = add_task

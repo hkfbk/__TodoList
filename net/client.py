@@ -4,7 +4,7 @@ from datetime import datetime
 import threading as thd
 import simplejson as json
 
-TIME = datetime.now().replace(hour=0, minute=0,second=0,microsecond=0)
+DATE = datetime.now().replace(hour=0, minute=0,second=0,microsecond=0)
 Stop = True
 def set_stop(b:bool):
     global Stop
@@ -21,14 +21,15 @@ def check_today()->dict[str,Task]:
 def check_task_time(today:dict[str,Task])->tuple:
     hour = 3600
     min_time = 86400
-    now_time = datetime.now() - TIME
+    now_time = datetime.now() - DATE
     task_list = list()
     for t in today.values():
-        ti = ((t.deadline - TIME) - now_time).total_seconds()
+        ti = ((t.deadline - DATE) - now_time).total_seconds()
         if ti <= hour:
             task_list.append(t)
         elif ti < min_time:
             min_time = ti - hour
+    min_time = min_time if min_time < hour else hour
     print(f'暂停{min_time}秒')
     return min_time,task_list
 
@@ -84,4 +85,8 @@ def run_client(event:thd.Event):
             event.clear()
         target = event.wait(time)
     print('client exit')
-     
+
+
+
+
+

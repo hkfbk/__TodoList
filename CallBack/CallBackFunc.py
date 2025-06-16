@@ -45,9 +45,6 @@ def cancle_task():
     User_task_list.save()
     Thread_event.set()
 
-
-
-
 def ls_task():
     """查看所有任务"""
     show:int = 0
@@ -105,3 +102,6 @@ def mark_status():
     User_task_list.save()
     Thread_event.set()
     print('修改完成')
+
+
+
