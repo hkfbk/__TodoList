@@ -5,7 +5,6 @@ import simplejson as json
 from Task import User_task_list
 from net import run_client
 import threading as thd
-from time import sleep
 from CallBack import add_task, cancle_task, ls_task, quit_exe, mark_status,Thread_event
 COMMAND_MAP:dict = dict() # type: ignore
 

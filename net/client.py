@@ -39,6 +39,7 @@ def send_hook(send_task:list[Task]):
       "content":''
    }}
     at:str = None # type: ignore
+    ret_tasks:list = list()
     # content = '任务提醒!!!\n任务{task}\n截止时间:{deadline}\n优先级:{priority}\n状态:{status}\n{at}'
     if User_task_list.name == '-all':
         at = '<at user_id=\"-1\">所有人</at>'
@@ -48,19 +49,37 @@ def send_hook(send_task:list[Task]):
     for i in send_task:
         data['text']['content'] = f'任务提醒!!!\n任务{i.task}\n截止时间:{i.deadline}\n优先级:{i.priority}\n状态:{i.status}\n{at}'
         print(data)
-        i.reminded = True
-        # http.post(URL['url'],json=data)
+        if http.post(URL['url'],json=data):
+            i.reminded = True
+        else:
+            ret_tasks.append(i)
+    return ret_tasks
+            
+def send_failed(tasks:list[Task]):
+    task_str = ''
+    for t in tasks:
+        task_str += t.task
+        task_str+='\n'
+    print(f'有{len(tasks)}个任务通知失败\n{task_str},服务器未响应')
+    
 
 def run_client(event:thd.Event):
     init_url()
     target = True
     today:dict[str,Task] = None # type: ignore
+    global Stop
     while Stop:
         if target:
             today = check_today()
         time,send_task_list = check_task_time(today)
         if len(send_task_list) > 0:
-            send_hook(send_task_list)
+            count = 1
+            tasks = send_hook(send_task_list)
+            while len(tasks) > 0 and count <3:
+                tasks = send_hook(tasks)
+                count+=1
+            if len(tasks) > 0:
+                send_failed(tasks)
         if Stop:
             event.clear()
         target = event.wait(time)
