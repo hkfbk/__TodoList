@@ -1,1 +1,1 @@
-from .client import run_client, set_stop
+from .client import HttpClient, set_stop

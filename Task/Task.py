@@ -31,11 +31,10 @@ class Task:
     执行状态:{self.status}, 优先级:{self.priority}
     '''
 
-class UserTaskList:
+class TaskManager:
     """
     任务列表
     """
-    
     def __init__(self) -> None:
         self.task_map:dict[str,Task] = dict() # 任务列表
         self.name:str = None # type: ignore
@@ -45,7 +44,6 @@ class UserTaskList:
     def set_userinfo(self,name:str, user_id:str) -> None:
         self.name = name # 任务负责人
         self.user_id = user_id # 任务负责人id
-    
     
     def load_tasks(self, L:list[dict]):
         for d in L:
@@ -58,7 +56,6 @@ class UserTaskList:
     def append_task(self, task:Task):
         with self.lock:
             self.task_map[task.task] = task
-        
     
     def cancle_task(self, task_name:str)->str | None:
         if task_name not in self.task_map:
@@ -69,36 +66,32 @@ class UserTaskList:
             del self.task_map[task_name]
             return '成功取消'
 
-    
-    def today_task(self):
+    def today_tasks(self):
         today = datetime.now().date()
         with self.lock:
             return {k:self.task_map[k] for k in self.task_map if self.task_map[k].deadline.date() == today}
+    
     def show_task_list(self, show_way:bool = None): # type: ignore
         """展示任务列表, show_way控制展示方式
 
         Args:
             show_way (bool, optional):  True为按完成状态排序;\n
                                         False为按日期排序;\n
-                                        None为按优先级排序,优先级相等时即将结束的任务优先. \n
+                                        None为今日任务. \n
                                         默认为 None.\n
         """
         pre = None
         if show_way is None:
-            pre = lambda task:(task[1].priority, task[1].deadline)
+            for L in self.today_tasks().values():
+                print(L)
+            return
         elif show_way:
             pre = lambda task:task[1].status
         else:
             pre = lambda task:task[1].deadline
-        today_task = self.today_task()
-        new_list = sorted(today_task.items(), key=pre)
+        new_list = sorted(self.task_map.items(), key=pre)
         for L in new_list:
             print(L[1])
-    
-    
-    
-    
-    
     
     def save(self):
         data_list = list()
@@ -119,17 +112,11 @@ class UserTaskList:
         with open(LOCALDATA, 'w', encoding='utf-8') as wf:
             # print(json_obj)
             json.dump(json_obj,wf,ensure_ascii=False,indent=4)
-            
     
     def __str__(self) -> str:
         return f'user:{self.name}, id{self.user_id}, task list{{{self.task_map}}}'
 
-    
-    
-        
 
-
-User_task_list:UserTaskList = UserTaskList()
 
 
 
