@@ -78,11 +78,12 @@ class Executer:
             try:
                 end_time_s =  input('任务截止时间,格式(yyyy-mm-dd hh:mm:ss):\n')#'2025-06-12 14:12:12'
                 end_time = datetime.strptime(end_time_s,r'%Y-%m-%d %H:%M:%S')
+                if end_time < datetime.now():
+                    print('任务结束时间早于当前时间，请重新设置')
+                    continue
                 break
             except ValueError:
                 print('请根据时间格式正确输入时间!!!',end=' ')
-        # print(end_time)
-        # stauts = '已完成' #TaskStartus(input('任务状态: 未开始, 进行中,  已完成,  推迟\n'))
         while 1:
             stauts = input('任务状态: 未开始, 进行中,  已完成,  推迟\n')
             if stauts in ('未开始', '进行中',  '已完成',  '推迟'):
@@ -150,9 +151,9 @@ class Executer:
             if task_name not in self.User_task_list.task_map:
                 print(f'任务{task_name}不存在', end='  ')
                 continue
-            if self.User_task_list.task_map[task_name].status == '已完成':
-                print(f'任务{task_name}已完成')
-                return
+            # if self.User_task_list.task_map[task_name].status == '已完成':
+            #     print(f'任务{task_name}已完成')
+            #     return
             break
         status:str = ''
         while 1:

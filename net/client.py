@@ -60,7 +60,6 @@ class HttpClient:
     }}
         at:str = None # type: ignore
         ret_tasks:list = list()
-        # content = '任务提醒!!!\n任务{task}\n截止时间:{deadline}\n优先级:{priority}\n状态:{status}\n{at}'
         if self.User_task_list.name == '-all':
             at = '<at user_id=\"-1\">所有人</at>'
         else:
@@ -73,7 +72,6 @@ class HttpClient:
                 i.reminded = True
             else:
                 ret_tasks.append(i)
-            ret_tasks.append(i)
         return ret_tasks
 
     def check_task_time(self,today:dict[str,Task])->tuple:
@@ -83,7 +81,7 @@ class HttpClient:
         task_list = list()
         for t in today.values():
             ti = ((t.deadline - DATE) - now_time).total_seconds()
-            if ti <= hour:
+            if 0 < ti <= hour:
                 task_list.append(t)
             elif ti < min_time:
                 min_time = ti - hour
