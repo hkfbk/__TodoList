@@ -6,4 +6,4 @@ venv/
 url.json
 build/
 dist/
-mian.spec
+main.spec
